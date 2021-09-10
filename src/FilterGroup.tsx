@@ -16,7 +16,7 @@ const FilterGroup = ({
       <Disclosure>
         {({ open }) => (
           <>
-            <Disclosure.Button className="flex justify-between w-full px-4 py-6 text-sm font-medium text-left focus:outline-none focus-visible:text-indigo-700 focus-visible:underline">
+            <Disclosure.Button className="flex justify-between w-full px-4 py-6 text-sm font-medium text-left focus:outline-none focus-visible:text-purple-700 focus-visible:underline">
               <span className="">{groupName}</span>
               <ChevronUpIcon
                 className={`${

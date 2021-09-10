@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import * as R from "ramda";
+import { SearchIcon } from "@heroicons/react/solid";
+import { XCircleIcon } from "@heroicons/react/outline";
 import api from "./api.json";
 import FilterGroup from "./FilterGroup";
 
@@ -63,7 +65,7 @@ const renderCheckboxMap = (
       <li key={v}>
         <label className="inline-flex items-center text-sm">
           <input
-            className="text-indigo-600 border-gray-300 rounded shadow-sm focus:border-indigo-300 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50"
+            className="text-purple-600 border-gray-300 rounded shadow-sm focus:border-purple-300 focus:ring focus:ring-offset-0 focus:ring-purple-200 focus:ring-opacity-50"
             type="checkbox"
             value={v}
             checked={m[v]}
@@ -101,38 +103,56 @@ const App = (): JSX.Element => {
   }, [csMap, searchTerm, authMap, httpsMap]);
 
   return (
-    <div>
-      <button
-        type="button"
-        onClick={() => {
-          setCsMap(defaultCsMap);
-          setAuthMap(defaultAuthMap);
-          setHttpsMap(defaultHttpsMap);
-          setSearchTerm("");
-        }}
-      >
-        clear all
-      </button>
-      <div>
-        <input
-          className="border"
-          type="search"
-          value={searchTerm}
-          onChange={e => setSearchTerm(e.target.value)}
-        />
+    <div className="flex flex-col h-screen">
+      <div className="w-full py-4 pl-4 bg-purple-600">
+        <h1 className="font-bold text-white">API Filter</h1>
       </div>
-      <div className="divide-y">
-        <FilterGroup groupName="Categories">
-          {renderCheckboxMap(categories, csMap, setCsMap)}
-        </FilterGroup>
-        <FilterGroup groupName="Auth">
-          {renderCheckboxMap(auth, authMap, setAuthMap)}
-        </FilterGroup>
-        <FilterGroup groupName="HTTPS">
-          {renderCheckboxMap(https, httpsMap, setHttpsMap)}
-        </FilterGroup>
+      <div className="flex justify-center w-full py-4 pl-4 bg-purple-200 shadow isolate ">
+        <div className="relative mt-1 rounded-md shadow-sm">
+          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <SearchIcon className="w-5 h-5 text-gray-400" aria-hidden="true" />
+          </div>
+          <input
+            className="block w-full pl-10 border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500 sm:text-sm"
+            type="search"
+            value={searchTerm}
+            placeholder="cat"
+            onChange={e => setSearchTerm(e.target.value)}
+          />
+        </div>
       </div>
-      <div className="bg-gray-200">{renderFiltered(filtered)}</div>
+      <div className="grid h-full grid-cols-4">
+        <div className="col-span-1 border-r border-purple-100 divide-y divide-purple-100">
+          <button
+            className="flex items-center p-4 ml-auto text-xs text-purple-700"
+            type="button"
+            onClick={() => {
+              setCsMap(defaultCsMap);
+              setAuthMap(defaultAuthMap);
+              setHttpsMap(defaultHttpsMap);
+              setSearchTerm("");
+            }}
+          >
+            <XCircleIcon
+              className="w-4 h-4 mr-1 text-current"
+              aria-hidden="true"
+            />
+            Clear all filters
+          </button>
+          <FilterGroup groupName="Categories">
+            {renderCheckboxMap(categories, csMap, setCsMap)}
+          </FilterGroup>
+          <FilterGroup groupName="Auth">
+            {renderCheckboxMap(auth, authMap, setAuthMap)}
+          </FilterGroup>
+          <FilterGroup groupName="HTTPS">
+            {renderCheckboxMap(https, httpsMap, setHttpsMap)}
+          </FilterGroup>
+        </div>
+        <div className="h-full col-span-3 bg-gray-50">
+          <div className="px-4 my-4">{renderFiltered(filtered)}</div>
+        </div>
+      </div>
     </div>
   );
 };
