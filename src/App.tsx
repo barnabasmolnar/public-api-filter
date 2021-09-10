@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import * as R from "ramda";
 import api from "./api.json";
+import FilterGroup from "./FilterGroup";
 
 const { groupBy, keys, values, any, includes, toLower, identity } = R;
 
@@ -57,17 +58,18 @@ const renderCheckboxMap = (
   m: FilterMap,
   setter: React.Dispatch<React.SetStateAction<FilterMap>>
 ) => (
-  <ul>
+  <ul className="space-y-4">
     {options.map(v => (
       <li key={v}>
-        <label>
+        <label className="inline-flex items-center text-sm">
           <input
+            className="text-indigo-600 border-gray-300 rounded shadow-sm focus:border-indigo-300 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50"
             type="checkbox"
             value={v}
             checked={m[v]}
             onChange={() => setter({ ...m, [v]: !m[v] })}
           />
-          {v}
+          <span className="ml-2">{v}</span>
         </label>
       </li>
     ))}
@@ -119,10 +121,16 @@ const App = (): JSX.Element => {
           onChange={e => setSearchTerm(e.target.value)}
         />
       </div>
-      <div className="grid grid-cols-3 my-12">
-        {renderCheckboxMap(auth, authMap, setAuthMap)}
-        {renderCheckboxMap(https, httpsMap, setHttpsMap)}
-        {renderCheckboxMap(categories, csMap, setCsMap)}
+      <div className="divide-y">
+        <FilterGroup groupName="Categories">
+          {renderCheckboxMap(categories, csMap, setCsMap)}
+        </FilterGroup>
+        <FilterGroup groupName="Auth">
+          {renderCheckboxMap(auth, authMap, setAuthMap)}
+        </FilterGroup>
+        <FilterGroup groupName="HTTPS">
+          {renderCheckboxMap(https, httpsMap, setHttpsMap)}
+        </FilterGroup>
       </div>
       <div className="bg-gray-200">{renderFiltered(filtered)}</div>
     </div>
