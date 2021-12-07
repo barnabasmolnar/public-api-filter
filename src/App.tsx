@@ -4,6 +4,8 @@ import { SearchIcon } from "@heroicons/react/solid";
 import { XCircleIcon } from "@heroicons/react/outline";
 import api from "./api.json";
 import FilterGroup from "./FilterGroup";
+import Group from "./Group";
+import CheckboxMap from "./CheckboxMap";
 
 const { groupBy, keys, values, any, includes, toLower, identity } = R;
 
@@ -13,7 +15,7 @@ const {
   options: { auth, https },
 } = api;
 
-interface FilterMap {
+export interface FilterMap {
   [k: string]: boolean;
 }
 
@@ -30,7 +32,7 @@ const defaultHttpsMap = makeFilterMap(https);
 const caseInsensitiveIncludes = (target: string, src: string) =>
   includes(toLower(target), toLower(src));
 
-interface RowItem {
+export interface RowItem {
   category: string;
   title: string;
   url: string;
@@ -43,40 +45,8 @@ const renderFiltered = (xs: RowItem[]) => {
   const grouped = groupBy(({ category }) => category, xs);
   const groupKs = keys(grouped);
 
-  return groupKs.map(k => (
-    <div key={k}>
-      <h1>{k}</h1>
-      <ul className="ml-4">
-        {grouped[k].map(({ title, url }) => (
-          <li key={url}>{title}</li>
-        ))}
-      </ul>
-    </div>
-  ));
+  return groupKs.map(k => <Group key={k} groupKey={k} group={grouped} />);
 };
-
-const renderCheckboxMap = (
-  options: string[],
-  m: FilterMap,
-  setter: React.Dispatch<React.SetStateAction<FilterMap>>
-) => (
-  <ul className="space-y-4">
-    {options.map(v => (
-      <li key={v}>
-        <label className="inline-flex items-center text-sm">
-          <input
-            className="text-purple-600 border-gray-300 rounded shadow-sm focus:border-purple-300 focus:ring focus:ring-offset-0 focus:ring-purple-200 focus:ring-opacity-50"
-            type="checkbox"
-            value={v}
-            checked={m[v]}
-            onChange={() => setter({ ...m, [v]: !m[v] })}
-          />
-          <span className="ml-2">{v}</span>
-        </label>
-      </li>
-    ))}
-  </ul>
-);
 
 const filterCheckboxMap = (m: FilterMap, v: string) => {
   const allFalse = !any(identity, values(m));
@@ -113,10 +83,10 @@ const App = (): JSX.Element => {
             <SearchIcon className="w-5 h-5 text-gray-400" aria-hidden="true" />
           </div>
           <input
-            className="block w-full pl-10 border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500 sm:text-sm"
+            className="block w-full pl-10 placeholder-gray-400 border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500 sm:text-sm"
             type="search"
             value={searchTerm}
-            placeholder="cat"
+            placeholder="Super Duper API"
             onChange={e => setSearchTerm(e.target.value)}
           />
         </div>
@@ -140,17 +110,17 @@ const App = (): JSX.Element => {
             Clear all filters
           </button>
           <FilterGroup groupName="Categories">
-            {renderCheckboxMap(categories, csMap, setCsMap)}
+            <CheckboxMap options={categories} m={csMap} setter={setCsMap} />
           </FilterGroup>
           <FilterGroup groupName="Auth">
-            {renderCheckboxMap(auth, authMap, setAuthMap)}
+            <CheckboxMap options={auth} m={authMap} setter={setAuthMap} />
           </FilterGroup>
           <FilterGroup groupName="HTTPS">
-            {renderCheckboxMap(https, httpsMap, setHttpsMap)}
+            <CheckboxMap options={https} m={httpsMap} setter={setHttpsMap} />
           </FilterGroup>
         </div>
-        <div className="h-full col-span-3 bg-gray-50">
-          <div className="px-4 my-4">{renderFiltered(filtered)}</div>
+        <div className="h-full col-span-3 bg-opacity-40 bg-purple-50">
+          <div className="px-4 my-4 space-y-12">{renderFiltered(filtered)}</div>
         </div>
       </div>
     </div>
