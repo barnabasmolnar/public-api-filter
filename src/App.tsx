@@ -4,6 +4,8 @@ import api from "./api.json";
 import Group from "./Group";
 import Filter from "./Filter";
 import Search from "./Search";
+import { FilterIcon } from "@heroicons/react/outline";
+import MobileFilter from "./MobileFilter";
 
 const { groupBy, keys, values, any, includes, toLower, identity } = R;
 
@@ -56,6 +58,7 @@ export interface ReducerState {
   authMap: FilterMap;
   httpsMap: FilterMap;
   searchTerm: string;
+  isMobileFilterOpen: boolean;
 }
 
 const initialState = {
@@ -63,13 +66,15 @@ const initialState = {
   authMap: defaultAuthMap,
   httpsMap: defaultHttpsMap,
   searchTerm: "",
+  isMobileFilterOpen: false,
 };
 
 export type SetMapAction = "SET_CS_MAP" | "SET_AUTH_MAP" | "SET_HTTPS_MAP";
 export type ActionType =
   | { type: SetMapAction; payload: FilterMap }
   | { type: "SET_SEARCH_TERM"; payload: string }
-  | { type: "CLEAR_ALL" };
+  | { type: "CLEAR_ALL" }
+  | { type: "TOGGLE_MOBILE_FILTER"; payload: boolean };
 
 const reducer = (state: ReducerState, action: ActionType) => {
   switch (action.type) {
@@ -83,6 +88,8 @@ const reducer = (state: ReducerState, action: ActionType) => {
       return { ...state, searchTerm: action.payload };
     case "CLEAR_ALL":
       return initialState;
+    case "TOGGLE_MOBILE_FILTER":
+      return { ...state, isMobileFilterOpen: action.payload };
   }
 };
 
@@ -104,22 +111,41 @@ const App = (): JSX.Element => {
   }, [state]);
 
   return (
-    <div className="flex flex-col h-screen">
-      <div className="w-full py-4 pl-4 bg-purple-600">
-        <h1 className="font-bold text-white">API Filter</h1>
-      </div>
-      <div className="flex justify-center w-full py-4 pl-4 bg-purple-200 shadow isolate ">
-        <Search dispatch={dispatch} state={state} />
-      </div>
-      <div className="grid h-full grid-cols-4">
-        <div className="col-span-1 border-r border-purple-100 divide-y divide-purple-100">
-          <Filter dispatch={dispatch} state={state} />
+    <>
+      <MobileFilter dispatch={dispatch} state={state} />
+      <div className="flex flex-col h-screen">
+        <div className="w-full py-2 pl-4 bg-purple-600 lg:py-4">
+          <div className="flex items-center">
+            <button
+              type="button"
+              className="p-2 mr-2 text-white lg:hidden focus:outline-none focus:ring-2 focus:ring-purple-300"
+              onClick={() =>
+                dispatch({ type: "TOGGLE_MOBILE_FILTER", payload: true })
+              }
+            >
+              <span className="sr-only">Open sidebar</span>
+              <FilterIcon className="w-6 h-6" aria-hidden="true" />
+            </button>
+            <h1 className="font-bold text-white">API Filter</h1>
+          </div>
         </div>
-        <div className="h-full col-span-3 bg-opacity-40 bg-purple-50">
-          <div className="px-4 my-4 space-y-12">{renderFiltered(filtered)}</div>
+        <div className="flex justify-center w-full py-4 pl-4 bg-purple-200 shadow isolate ">
+          <Search dispatch={dispatch} state={state} />
+        </div>
+        <div className="grid h-full grid-cols-4">
+          <div className="hidden col-span-1 border-r border-purple-100 divide-y divide-purple-100 lg:block">
+            {!state.isMobileFilterOpen && (
+              <Filter dispatch={dispatch} state={state} />
+            )}
+          </div>
+          <div className="h-full col-span-4 lg:col-span-3 bg-opacity-40 bg-purple-50">
+            <div className="px-4 my-4 space-y-12">
+              {renderFiltered(filtered)}
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
