@@ -1,15 +1,6 @@
 import React from "react";
 import { XCircleIcon } from "@heroicons/react/outline";
-import {
-  defaultCsMap,
-  defaultAuthMap,
-  defaultHttpsMap,
-  ActionType,
-  ReducerState,
-  categories,
-  auth,
-  https,
-} from "./App";
+import { ActionType, ReducerState, categories, auth, https } from "./App";
 import CheckboxMap from "./CheckboxMap";
 import FilterGroup from "./FilterGroup";
 
@@ -24,10 +15,7 @@ const Filter = ({ dispatch, state }: FilterProps): JSX.Element => (
       className="flex items-center p-4 ml-auto text-xs text-purple-700"
       type="button"
       onClick={() => {
-        dispatch({ type: "SET_CS_MAP", payload: defaultCsMap });
-        dispatch({ type: "SET_AUTH_MAP", payload: defaultAuthMap });
-        dispatch({ type: "SET_HTTPS_MAP", payload: defaultHttpsMap });
-        dispatch({ type: "SET_SEARCH_TERM", payload: "" });
+        dispatch({ type: "CLEAR_ALL" });
       }}
     >
       <XCircleIcon className="w-4 h-4 mr-1 text-current" aria-hidden="true" />

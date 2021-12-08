@@ -68,7 +68,8 @@ const initialState = {
 export type SetMapAction = "SET_CS_MAP" | "SET_AUTH_MAP" | "SET_HTTPS_MAP";
 export type ActionType =
   | { type: SetMapAction; payload: FilterMap }
-  | { type: "SET_SEARCH_TERM"; payload: string };
+  | { type: "SET_SEARCH_TERM"; payload: string }
+  | { type: "CLEAR_ALL" };
 
 const reducer = (state: ReducerState, action: ActionType) => {
   switch (action.type) {
@@ -80,6 +81,8 @@ const reducer = (state: ReducerState, action: ActionType) => {
       return { ...state, httpsMap: action.payload };
     case "SET_SEARCH_TERM":
       return { ...state, searchTerm: action.payload };
+    case "CLEAR_ALL":
+      return initialState;
   }
 };
 
@@ -98,7 +101,7 @@ const App = (): JSX.Element => {
     );
 
     setFiltered(xs);
-  }, [state.csMap, state.authMap, state.httpsMap, state.searchTerm]);
+  }, [state]);
 
   return (
     <div className="flex flex-col h-screen">
