@@ -1,13 +1,19 @@
 import React from "react";
-import { FilterMap } from "./App";
+import { FilterMap, SetMapAction, ActionType } from "./App";
 
 interface CheckboxMapProps {
   options: string[];
   m: FilterMap;
-  setter: React.Dispatch<React.SetStateAction<FilterMap>>;
+  dispatch: React.Dispatch<ActionType>;
+  setAction: SetMapAction;
 }
 
-const CheckboxMap = ({ options, m, setter }: CheckboxMapProps): JSX.Element => (
+const CheckboxMap = ({
+  options,
+  m,
+  dispatch,
+  setAction,
+}: CheckboxMapProps): JSX.Element => (
   <ul className="space-y-4">
     {options.map(v => (
       <li key={v}>
@@ -17,7 +23,9 @@ const CheckboxMap = ({ options, m, setter }: CheckboxMapProps): JSX.Element => (
             type="checkbox"
             value={v}
             checked={m[v]}
-            onChange={() => setter({ ...m, [v]: !m[v] })}
+            onChange={() =>
+              dispatch({ type: setAction, payload: { ...m, [v]: !m[v] } })
+            }
           />
           <span className="ml-2">{v}</span>
         </label>
