@@ -4,20 +4,31 @@ import { ChevronUpIcon } from "@heroicons/react/solid";
 
 interface FilterGroupProps {
   groupName: string;
+  selectedCount: number;
   children?: React.ReactNode;
 }
 
 const FilterGroup = ({
   groupName,
+  selectedCount,
   children,
 }: FilterGroupProps): JSX.Element => {
+  const hasAtLeastOneSelectedItem = selectedCount > 0;
+
   return (
     <div>
       <Disclosure>
         {({ open }) => (
           <>
             <Disclosure.Button className="flex justify-between w-full px-4 py-6 text-sm font-medium text-left focus:outline-none focus-visible:text-purple-700 focus-visible:underline">
-              <span className="">{groupName}</span>
+              <span
+                className={`${
+                  hasAtLeastOneSelectedItem ? "text-purple-700" : ""
+                }`}
+              >
+                {groupName}{" "}
+                {hasAtLeastOneSelectedItem && <span>({selectedCount})</span>}
+              </span>
               <ChevronUpIcon
                 className={`${
                   open ? "transform rotate-180" : ""

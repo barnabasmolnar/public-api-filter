@@ -6,6 +6,7 @@ import Filter from "./Filter";
 import Search from "./Search";
 import { FilterIcon } from "@heroicons/react/outline";
 import MobileFilter from "./MobileFilter";
+import NotFound from "./NotFound";
 
 const { groupBy, keys, values, any, includes, toLower, identity } = R;
 
@@ -41,6 +42,7 @@ export interface RowItem {
   https: string;
   cors: string;
 }
+
 const renderFiltered = (xs: RowItem[]) => {
   const grouped = groupBy(({ category }) => category, xs);
   const groupKs = keys(grouped);
@@ -110,6 +112,8 @@ const App = (): JSX.Element => {
     setFiltered(xs);
   }, [state]);
 
+  const result = renderFiltered(filtered);
+
   return (
     <>
       <MobileFilter dispatch={dispatch} state={state} />
@@ -139,9 +143,11 @@ const App = (): JSX.Element => {
             )}
           </div>
           <div className="h-full col-span-4 lg:col-span-3 bg-opacity-40 bg-purple-50">
-            <div className="px-4 my-4 space-y-12">
-              {renderFiltered(filtered)}
-            </div>
+            {result.length ? (
+              <div className="px-4 my-4 space-y-12">{result}</div>
+            ) : (
+              <NotFound />
+            )}
           </div>
         </div>
       </div>
