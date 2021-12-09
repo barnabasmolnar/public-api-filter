@@ -2,6 +2,8 @@
 
 This project provides a frontend for the [excellent Public APIs collection available on GitHub](https://github.com/public-apis/public-apis). You can filter by title, category, auth and HTTPS options.
 
+The live site can be viewed at https://public-api-filter.netlify.app/.
+
 ## Notes
 
 As far as I know, there is no official JSON data provided for the list, so I came up with a [quick little script](https://stackblitz.com/edit/node-bzt7td?file=index.js) to parse and collect the relevant data into a single `.json` file which the React frontend can then consume. It appears that `markdown-tables-to-json` dependency I'm using escapes some characters which leads to occasional results such as `"title": "Abstract&#39;s Holiday API"`. For now, this remains a temporary shortcoming with my humble apologies. The data isn't very fresh either, last time I ran this script was back in Sept 2021, I believe, so some of the latest additions to the list are missing.
